@@ -150,7 +150,7 @@
             // number_1
             // 
             this.number_1.AutoSize = true;
-            this.number_1.Location = new System.Drawing.Point(29, 22);
+            this.number_1.Location = new System.Drawing.Point(46, 22);
             this.number_1.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.number_1.Name = "number_1";
             this.number_1.Size = new System.Drawing.Size(55, 18);
@@ -161,7 +161,7 @@
             // name_1
             // 
             this.name_1.AutoSize = true;
-            this.name_1.Location = new System.Drawing.Point(125, 22);
+            this.name_1.Location = new System.Drawing.Point(142, 22);
             this.name_1.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.name_1.Name = "name_1";
             this.name_1.Size = new System.Drawing.Size(55, 18);
@@ -184,6 +184,8 @@
             // 
             // panel_list1
             // 
+            this.panel_list1.BackgroundImage = global::WindowsFormsApplication1.Properties.Resources.dot03;
+            this.panel_list1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.panel_list1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel_list1.Controls.Add(this.checkbutton_1st_4);
             this.panel_list1.Controls.Add(this.number_1);
@@ -197,7 +199,8 @@
             this.panel_list1.Size = new System.Drawing.Size(795, 65);
             this.panel_list1.TabIndex = 10;
             this.panel_list1.Tag = "0";
-            this.panel_list1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.group_List_1_MouseDown);
+            this.panel_list1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel_list_MouseDown);
+            this.panel_list1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel_list_MouseMove);
             // 
             // numericUpDown_TurnNum
             // 
@@ -245,6 +248,7 @@
             // 
             // next_player_button
             // 
+            this.next_player_button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.next_player_button.Location = new System.Drawing.Point(689, 544);
             this.next_player_button.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.next_player_button.Name = "next_player_button";
@@ -256,6 +260,7 @@
             // 
             // group_all
             // 
+            this.group_all.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.group_all.Controls.Add(this.panel_list6);
             this.group_all.Controls.Add(this.panel_list5);
             this.group_all.Controls.Add(this.panel_list4);
@@ -325,7 +330,7 @@
             // number_6
             // 
             this.number_6.AutoSize = true;
-            this.number_6.Location = new System.Drawing.Point(29, 24);
+            this.number_6.Location = new System.Drawing.Point(46, 24);
             this.number_6.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.number_6.Name = "number_6";
             this.number_6.Size = new System.Drawing.Size(55, 18);
@@ -336,7 +341,7 @@
             // name_6
             // 
             this.name_6.AutoSize = true;
-            this.name_6.Location = new System.Drawing.Point(125, 24);
+            this.name_6.Location = new System.Drawing.Point(142, 24);
             this.name_6.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.name_6.Name = "name_6";
             this.name_6.Size = new System.Drawing.Size(55, 18);
@@ -411,7 +416,7 @@
             // number_5
             // 
             this.number_5.AutoSize = true;
-            this.number_5.Location = new System.Drawing.Point(29, 24);
+            this.number_5.Location = new System.Drawing.Point(46, 24);
             this.number_5.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.number_5.Name = "number_5";
             this.number_5.Size = new System.Drawing.Size(55, 18);
@@ -422,7 +427,7 @@
             // name_5
             // 
             this.name_5.AutoSize = true;
-            this.name_5.Location = new System.Drawing.Point(125, 24);
+            this.name_5.Location = new System.Drawing.Point(142, 24);
             this.name_5.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.name_5.Name = "name_5";
             this.name_5.Size = new System.Drawing.Size(55, 18);
@@ -497,7 +502,7 @@
             // number_4
             // 
             this.number_4.AutoSize = true;
-            this.number_4.Location = new System.Drawing.Point(29, 23);
+            this.number_4.Location = new System.Drawing.Point(46, 23);
             this.number_4.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.number_4.Name = "number_4";
             this.number_4.Size = new System.Drawing.Size(55, 18);
@@ -508,7 +513,7 @@
             // name_4
             // 
             this.name_4.AutoSize = true;
-            this.name_4.Location = new System.Drawing.Point(125, 23);
+            this.name_4.Location = new System.Drawing.Point(142, 23);
             this.name_4.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.name_4.Name = "name_4";
             this.name_4.Size = new System.Drawing.Size(55, 18);
@@ -583,7 +588,7 @@
             // number_3
             // 
             this.number_3.AutoSize = true;
-            this.number_3.Location = new System.Drawing.Point(29, 23);
+            this.number_3.Location = new System.Drawing.Point(46, 23);
             this.number_3.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.number_3.Name = "number_3";
             this.number_3.Size = new System.Drawing.Size(55, 18);
@@ -594,7 +599,7 @@
             // name_3
             // 
             this.name_3.AutoSize = true;
-            this.name_3.Location = new System.Drawing.Point(125, 23);
+            this.name_3.Location = new System.Drawing.Point(142, 23);
             this.name_3.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.name_3.Name = "name_3";
             this.name_3.Size = new System.Drawing.Size(55, 18);
@@ -669,7 +674,7 @@
             // number_2
             // 
             this.number_2.AutoSize = true;
-            this.number_2.Location = new System.Drawing.Point(29, 25);
+            this.number_2.Location = new System.Drawing.Point(46, 25);
             this.number_2.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.number_2.Name = "number_2";
             this.number_2.Size = new System.Drawing.Size(55, 18);
@@ -680,7 +685,7 @@
             // name_2
             // 
             this.name_2.AutoSize = true;
-            this.name_2.Location = new System.Drawing.Point(126, 25);
+            this.name_2.Location = new System.Drawing.Point(143, 25);
             this.name_2.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.name_2.Name = "name_2";
             this.name_2.Size = new System.Drawing.Size(55, 18);
@@ -729,6 +734,8 @@
             // 
             // panel_list2
             // 
+            this.panel_list2.BackgroundImage = global::WindowsFormsApplication1.Properties.Resources.dot03;
+            this.panel_list2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.panel_list2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel_list2.Controls.Add(this.checkbutton_2nd_4);
             this.panel_list2.Controls.Add(this.number_2);
@@ -742,9 +749,13 @@
             this.panel_list2.Size = new System.Drawing.Size(795, 65);
             this.panel_list2.TabIndex = 11;
             this.panel_list2.Tag = "1";
+            this.panel_list2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel_list_MouseDown);
+            this.panel_list2.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel_list_MouseMove);
             // 
             // panel_list3
             // 
+            this.panel_list3.BackgroundImage = global::WindowsFormsApplication1.Properties.Resources.dot03;
+            this.panel_list3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.panel_list3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel_list3.Controls.Add(this.checkbutton_3rd_4);
             this.panel_list3.Controls.Add(this.number_3);
@@ -761,6 +772,8 @@
             // 
             // panel_list4
             // 
+            this.panel_list4.BackgroundImage = global::WindowsFormsApplication1.Properties.Resources.dot03;
+            this.panel_list4.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.panel_list4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel_list4.Controls.Add(this.checkbutton_4th_4);
             this.panel_list4.Controls.Add(this.number_4);
@@ -777,6 +790,8 @@
             // 
             // panel_list5
             // 
+            this.panel_list5.BackgroundImage = global::WindowsFormsApplication1.Properties.Resources.dot03;
+            this.panel_list5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.panel_list5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel_list5.Controls.Add(this.checkbutton_5th_4);
             this.panel_list5.Controls.Add(this.number_5);
@@ -793,6 +808,8 @@
             // 
             // panel_list6
             // 
+            this.panel_list6.BackgroundImage = global::WindowsFormsApplication1.Properties.Resources.dot03;
+            this.panel_list6.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.panel_list6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel_list6.Controls.Add(this.checkbutton_6th_4);
             this.panel_list6.Controls.Add(this.number_6);

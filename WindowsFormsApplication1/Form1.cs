@@ -22,10 +22,6 @@ namespace WindowsFormsApplication1
         const string FILENAME_OPTION = "result_data\\Option.csv";
         const string FILENAME_PLAYERLIST = "result_data\\PlayerList.csv";
 
-        const int WM_SYSCOMMAND = 0x0112;
-        const int SC_MOVE = 0xF010;
-        const int SC_SIZE = 0xF000;
-
         const int MAX_PLAYER_NUM = 6;
         const int MAX_PLAY_NUM = 4;
         DisplayDataList[] mDisplayDataList;
@@ -55,30 +51,32 @@ namespace WindowsFormsApplication1
 
             InitalizeAll();
         }
+        
+        //マウスのクリック位置を記憶
+        private Point mousePoint;
 
-        [DllImport("User32.dll", EntryPoint = "SendMessage")]
-        extern static int SendMessageGetTextLength(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("User32.dll")]
-        public static extern int SendMessage(IntPtr hWnd, int uMsg, int wParam, string lParam);
-
-        [DllImport("User32.dll")]
-        public static extern int SendMessage(IntPtr hWnd, int uMsg, int wParam, int lParam);
-
-        [DllImport("User32.dll")]
-        public static extern bool SetCapture(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        public static extern bool ReleaseCapture();
-
-        private void group_List_1_MouseDown(object sender, MouseEventArgs e)
+        //マウスのボタンが押されたとき
+        private void panel_list_MouseDown(object sender,
+            System.Windows.Forms.MouseEventArgs e)
         {
-            panel_list1.Location = new Point(0, SC_MOVE);
-            //SetCapture(group_List_1.Handle);
-            //ReleaseCapture();
-            //SendMessage(group_List_1.Handle, WM_SYSCOMMAND, SC_MOVE | 2, 0);
+            if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+            {
+                //位置を記憶する
+                mousePoint = new Point(e.X, e.Y);
+            }
         }
 
+        //マウスが動いたとき
+        private void panel_list_MouseMove(object sender,
+            System.Windows.Forms.MouseEventArgs e)
+        {
+            Panel panel = (Panel)sender;
+            if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+            {
+                //panel.Left += e.X - mousePoint.X;
+                panel.Top += e.Y - mousePoint.Y;
+            }
+        }
 
         private void SetStartOption()
         {
