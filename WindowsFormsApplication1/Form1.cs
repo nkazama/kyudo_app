@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Collections;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace WindowsFormsApplication1
 {
@@ -20,6 +21,10 @@ namespace WindowsFormsApplication1
         const string FILENAME_RESULT = "result_data\\Result.csv";
         const string FILENAME_OPTION = "result_data\\Option.csv";
         const string FILENAME_PLAYERLIST = "result_data\\PlayerList.csv";
+
+        const int WM_SYSCOMMAND = 0x0112;
+        const int SC_MOVE = 0xF010;
+        const int SC_SIZE = 0xF000;
 
         const int MAX_PLAYER_NUM = 6;
         const int MAX_PLAY_NUM = 4;
@@ -50,6 +55,30 @@ namespace WindowsFormsApplication1
 
             InitalizeAll();
         }
+
+        [DllImport("User32.dll", EntryPoint = "SendMessage")]
+        extern static int SendMessageGetTextLength(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("User32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int uMsg, int wParam, string lParam);
+
+        [DllImport("User32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int uMsg, int wParam, int lParam);
+
+        [DllImport("User32.dll")]
+        public static extern bool SetCapture(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        public static extern bool ReleaseCapture();
+
+        private void group_List_1_MouseDown(object sender, MouseEventArgs e)
+        {
+            panel_list1.Location = new Point(0, SC_MOVE);
+            //SetCapture(group_List_1.Handle);
+            //ReleaseCapture();
+            //SendMessage(group_List_1.Handle, WM_SYSCOMMAND, SC_MOVE | 2, 0);
+        }
+
 
         private void SetStartOption()
         {
@@ -101,12 +130,12 @@ namespace WindowsFormsApplication1
         }
         private void ResetAllDisplay()
         {
-            GroupBox group = null;
+            Panel group = null;
             foreach (object obj_all in group_all.Controls)
             {
-                if (obj_all.GetType() == typeof(GroupBox))
+                if (obj_all.GetType() == typeof(Panel))
                 {
-                    group = (GroupBox)obj_all;
+                    group = (Panel)obj_all;
                     string s = (string)group.Tag;
                     int display_count = Int32.Parse(s);
 
@@ -220,12 +249,12 @@ namespace WindowsFormsApplication1
         }
         private void LoadData(int display_count, int player_id, string player_name, int[] result)
         {
-            GroupBox group = null;
+            Panel group = null;
             foreach (object obj_all in group_all.Controls)
             {
-                if (obj_all.GetType() == typeof(GroupBox))
+                if (obj_all.GetType() == typeof(Panel))
                 {
-                    group = (GroupBox)obj_all;
+                    group = (Panel)obj_all;
                     string s = (string)group.Tag;
                     if (display_count == Int32.Parse(s)) break;
                 }
@@ -257,13 +286,13 @@ namespace WindowsFormsApplication1
 
         private void NextTurnDisplay()
         {
-            GroupBox group = null;
+            Panel group = null;
             int player_num = mCurrent1stPlayer + (mTurnNumber - mCurrentTurn) * mDisplayPlayNum;
             foreach (object obj_all in group_all.Controls)
             {
-                if (obj_all.GetType() == typeof(GroupBox))
+                if (obj_all.GetType() == typeof(Panel))
                 {
-                    group = (GroupBox)obj_all;
+                    group = (Panel)obj_all;
                     string s = (string)group.Tag;
                     int display_count = Int32.Parse(s);
 
@@ -279,10 +308,10 @@ namespace WindowsFormsApplication1
             int display_count = 0;
             Button button = (Button)sender;
             object obj = (Object)button.Parent;
-            GroupBox group = null;
-            if (obj.GetType() == typeof(GroupBox))
+            Panel group = null;
+            if (obj.GetType() == typeof(Panel))
             {
-                group = (GroupBox)obj;
+                group = (Panel)obj;
                 string s = (string)group.Tag;
                 display_count = Int32.Parse(s);
             }
@@ -296,7 +325,7 @@ namespace WindowsFormsApplication1
             SetLabel(TAG_RESULT, mDisplayDataList[display_count].GetTotalResult().ToString(), group);
         }
 
-        private void SetLabel(string tag, string value, GroupBox group)
+        private void SetLabel(string tag, string value, Panel group)
         {
             foreach (Control c in group.Controls)
             {
@@ -340,6 +369,5 @@ namespace WindowsFormsApplication1
 
             SaveData_FromCSVOption();
         }
-
     }
 }
