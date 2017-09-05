@@ -70,6 +70,8 @@ namespace HitListApp
             {
                 //位置を記憶する
                 mousePoint = new Point(e.X, e.Y);
+                Panel panel = (Panel)sender;
+                panel.BringToFront();
             }
         }
 
@@ -207,7 +209,11 @@ namespace HitListApp
                     group = (Panel)obj_all;
                     string s = (string)group.Tag;
                     int display_count = Int32.Parse(s);
-
+                    if (display_count >= mDisplayPlayNum)
+                    {
+                        group_all.Controls.Remove(group);
+                    }
+                    
                     SetLabel(TAG_ID, "None", group);
                     SetLabel(TAG_NAME, "None", group);
                     foreach (object obj in group.Controls)
@@ -224,8 +230,8 @@ namespace HitListApp
                     SetLabel(TAG_RESULT, "None", group);
                 }
             }
-
-           
+            int[] tag_num = { 0, 1, 2, 3, 4, 5, 6 };
+            panel_list_ResetAllPosition(tag_num);
         }
 
         #region Save Datas
