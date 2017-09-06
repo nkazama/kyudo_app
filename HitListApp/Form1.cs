@@ -45,7 +45,7 @@ namespace HitListApp
             InitializeComponent();
             mDisplayDataList = new DisplayDataList[MAX_PLAYER_NUM];
             for (int i = 0; i < MAX_PLAYER_NUM; i++)
-                mDisplayDataList[i] = new DisplayDataList();
+                mDisplayDataList[i] = new DisplayDataList(i);
 
             mPlayerList = new PlayerListAL();
 
@@ -135,6 +135,15 @@ namespace HitListApp
                     int new_tag = change_tag[old_tag];
                     _panel.Tag = new_tag.ToString();
                     _panel.Top = GetPanelPosY(new_tag);
+                }
+            }
+
+            for (int i = 0; i < mDisplayPlayNum; i++)
+            {
+                int new_tag = change_tag[mDisplayDataList[i].GetTagID()];
+                if (new_tag != -1)
+                {
+                    mDisplayDataList[i].SetTagID(new_tag);
                 }
             }
         }
@@ -246,7 +255,7 @@ namespace HitListApp
         private void SaveData_FromCSVResult()
         {
             System.IO.StreamWriter sw = new System.IO.StreamWriter(FILENAME_RESULT, true, System.Text.Encoding.GetEncoding("shift_jis"));
-            for(int i = 0; i < mDisplayPlayNum;i++)
+            for (int i = 0; i < mDisplayPlayNum; i++)
             {
                 int player = mDisplayDataList[i].GetPlayerID();
                 int result_1 = (int)mDisplayDataList[i].GetCheckButton(0);
@@ -254,7 +263,8 @@ namespace HitListApp
                 int result_3 = (int)mDisplayDataList[i].GetCheckButton(2);
                 int result_4 = (int)mDisplayDataList[i].GetCheckButton(3);
                 int result_total = (int)mDisplayDataList[i].GetTotalResult();
-                sw.WriteLine(mCurrentTurn + "," + i + "," + player + "," + result_1 + "," + result_2 + "," + result_3 + "," + result_4 + "," + result_total);
+                sw.WriteLine(mCurrentTurn + "," + mDisplayDataList[i].GetTagID() + "," + player + "," + result_1 + "," + result_2 + "," + result_3 + "," + result_4 + "," + result_total);
+
             }
             sw.Close();
         }
@@ -336,6 +346,7 @@ namespace HitListApp
             }
 
             mDisplayDataList[display_count].SetPlayerID(player_id);
+            mDisplayDataList[display_count].SetTagID(display_count);
 
             SetLabel(TAG_ID, player_id.ToString(), group);
             SetLabel(TAG_NAME, player_name, group);

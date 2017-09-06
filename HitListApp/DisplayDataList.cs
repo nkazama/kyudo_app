@@ -17,18 +17,19 @@ namespace HitListApp
     class DisplayDataList
     {
         const int MAX_PLAY_NUM = 4;
-        public DisplayDataList()
+        public DisplayDataList(int tag)
         {
             mCheck = new int[MAX_PLAY_NUM];
-            InitDatas();
+            InitDatas(tag);
         }
 
-        public void InitDatas()
+        public void InitDatas(int tag)
         {
             for (int i = 0; i < MAX_PLAY_NUM; i++ )
                 mCheck[i] = (int)CheckType.CHECK_NONE;
 
             mTotalResult = 0;
+            mTagID = tag;
         }
 
         public void ClickCheckButton(int s)
@@ -73,8 +74,18 @@ namespace HitListApp
             return mPlayerID;
         }
 
+        public void SetTagID(int tagID)
+        {
+            mTagID = tagID;
+        }
+        public int GetTagID()
+        {
+            return mTagID;
+        }
+
         protected int[] mCheck;
         protected int mTotalResult;
         protected int mPlayerID;
+        protected int mTagID;
     }
 }
