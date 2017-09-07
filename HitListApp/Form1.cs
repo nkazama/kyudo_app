@@ -36,9 +36,11 @@ namespace HitListApp
         const int PANEL_TOP = 20;
         const int PANEL_HEIGHT = 44;
         const int PANEL_HEIGHT_BORDER = 10;
+        const int PANEL_NEXT_BORDER = 50;
 
         public int GetPanelPosY(int tag){ return PANEL_TOP + PANEL_HEIGHT * tag; }
         public int GetPanelIDfromPos(int posy) { return (posy - PANEL_TOP + PANEL_HEIGHT_BORDER) / PANEL_HEIGHT; }
+        public int GetPanelNextBorder() { return PANEL_NEXT_BORDER + PANEL_TOP + mDisplayPlayNum * PANEL_HEIGHT; }
 
         public Form1()
         {
@@ -86,42 +88,48 @@ namespace HitListApp
                 //タグ情報を変更
                 string s = (string)panel.Tag;
                 int old_tag = Int32.Parse(s);
-                int new_tag = GetPanelIDfromPos(panel.Top);
+                int current_posY = panel.Top + PANEL_HEIGHT / 2;
+                if (GetPanelNextBorder() > current_posY)
+                {
+                    //@@@ action 次の立ちに移動
+                    return;
+                }
+                int new_tag = GetPanelIDfromPos(current_posY);
                 if (new_tag < 0 || new_tag >= mDisplayPlayNum || new_tag == old_tag)
                 {
+                    //reset the Y position of the target panel
                     panel.Top = GetPanelPosY(old_tag);
+                    return;
                 }
-                else
+
+                // 移動したパネルのタグ変換
+                int[] change_tag_id = { -1, -1, -1, -1, -1, -1 };
+                change_tag_id[old_tag] = new_tag;
+                for (int i = 0; i < MAX_PLAYER_NUM; i++)
                 {
-                    // 移動したパネルのタグ変換
-                    int[] change_tag_id = { -1, -1, -1, -1, -1, -1 };
-                    change_tag_id[old_tag] = new_tag;
-                    for (int i = 0; i < MAX_PLAYER_NUM; i++)
+                    if (change_tag_id[i] != -1) continue;
+
+                    int buf = 0;
+                    if (old_tag < new_tag)
                     {
-                        if (change_tag_id[i] != -1) continue;
-
-                        int buf = 0;
-                        if (old_tag < new_tag)
-                        {
-                            if (i > new_tag) buf++;
-                            if (i >= old_tag) buf--;
-                        }
-                        else
-                        {
-                            if (i >= new_tag) buf++;
-                            if (i > old_tag) buf--;
-                        }
-                        change_tag_id[i] = i + buf;
+                        if (i > new_tag) buf++;
+                        if (i >= old_tag) buf--;
                     }
-
-                    panel_list_ResetAllPosition(change_tag_id);
+                    else
+                    {
+                        if (i >= new_tag) buf++;
+                        if (i > old_tag) buf--;
+                    }
+                    change_tag_id[i] = i + buf;
                 }
+
+                panel_list_ResetAllPosition(change_tag_id);
             }
         }
 
         private void panel_list_ResetAllPosition(int[] change_tag)
         {
-            //その他パネルのタグ変換
+            //全パネルのタグ変換。ポジション整列
             foreach (object obj_all in group_all.Controls)
             {
                 if (obj_all.GetType() == typeof(Panel))
