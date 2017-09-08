@@ -39,7 +39,7 @@ namespace HitListApp
         const int PANEL_NEXT_BORDER = 50;
 
         public int GetPanelPosY(int tag){ return PANEL_TOP + PANEL_HEIGHT * tag; }
-        public int GetPanelIDfromPos(int posy) { return (posy - PANEL_TOP + PANEL_HEIGHT_BORDER) / PANEL_HEIGHT; }
+        public int GetPanelIDfromPos(int posy) { return ( posy - PANEL_TOP ) / PANEL_HEIGHT; }
         public int GetPanelNextBorder() { return PANEL_NEXT_BORDER + PANEL_TOP + mDisplayPlayNum * PANEL_HEIGHT; }
 
         public Form1()
@@ -47,7 +47,7 @@ namespace HitListApp
             InitializeComponent();
             mDisplayDataList = new DisplayDataList[MAX_PLAYER_NUM];
             for (int i = 0; i < MAX_PLAYER_NUM; i++)
-                mDisplayDataList[i] = new DisplayDataList(i);
+                mDisplayDataList[i] = new DisplayDataList();
 
             mPlayerList = new PlayerListAL();
 
@@ -60,7 +60,8 @@ namespace HitListApp
 
             InitalizeAll();
         }
-        
+
+# region Mouse Status
         //マウスのクリック位置を記憶
         private Point mousePoint;
 
@@ -92,7 +93,7 @@ namespace HitListApp
                 if (GetPanelNextBorder() > current_posY)
                 {
                     //@@@ action 次の立ちに移動
-                    return;
+                    //return;
                 }
                 int new_tag = GetPanelIDfromPos(current_posY);
                 if (new_tag < 0 || new_tag >= mDisplayPlayNum || new_tag == old_tag)
@@ -138,7 +139,7 @@ namespace HitListApp
                     string s = (string)_panel.Tag;
                     int old_tag = Int32.Parse(s);
 
-                    if ( old_tag >= change_tag.Length || change_tag[old_tag] == -1) continue;
+                    if ( old_tag >= change_tag.Length ) continue;
                     
                     int new_tag = change_tag[old_tag];
                     _panel.Tag = new_tag.ToString();
@@ -146,13 +147,10 @@ namespace HitListApp
                 }
             }
 
+            DisplayDataList[] displayDataList = mDisplayDataList;
             for (int i = 0; i < mDisplayPlayNum; i++)
             {
-                int new_tag = change_tag[mDisplayDataList[i].GetTagID()];
-                if (new_tag != -1)
-                {
-                    mDisplayDataList[i].SetTagID(new_tag);
-                }
+                mDisplayDataList[i] = displayDataList[change_tag[i]];
             }
         }
 
@@ -167,6 +165,7 @@ namespace HitListApp
                 panel.Top += e.Y - mousePoint.Y;
             }
         }
+#endregion
 
         private void SetStartOption()
         {
@@ -251,7 +250,7 @@ namespace HitListApp
             panel_list_ResetAllPosition(tag_num);
         }
 
-        #region Save Datas
+#region Save Datas
         private void SaveData_FromCSVOption()
         {
             System.IO.StreamWriter sw = new System.IO.StreamWriter(FILENAME_OPTION, false, System.Text.Encoding.GetEncoding("shift_jis"));
@@ -263,19 +262,47 @@ namespace HitListApp
         private void SaveData_FromCSVResult()
         {
             System.IO.StreamWriter sw = new System.IO.StreamWriter(FILENAME_RESULT, true, System.Text.Encoding.GetEncoding("shift_jis"));
-            for (int i = 0; i < mDisplayPlayNum; i++)
+            
+            for (int i = 0; i < mDisplayPlayNum; i++ )
             {
-                int player = mDisplayDataList[i].GetPlayerID();
-                int result_1 = (int)mDisplayDataList[i].GetCheckButton(0);
-                int result_2 = (int)mDisplayDataList[i].GetCheckButton(1);
-                int result_3 = (int)mDisplayDataList[i].GetCheckButton(2);
-                int result_4 = (int)mDisplayDataList[i].GetCheckButton(3);
-                int result_total = (int)mDisplayDataList[i].GetTotalResult();
-                sw.WriteLine(mCurrentTurn + "," + mDisplayDataList[i].GetTagID() + "," + player + "," + result_1 + "," + result_2 + "," + result_3 + "," + result_4 + "," + result_total);
-
+                    int player = mDisplayDataList[i].GetPlayerID();
+                    int result_1 = (int)mDisplayDataList[i].GetCheckButton(0);
+                    int result_2 = (int)mDisplayDataList[i].GetCheckButton(1);
+                    int result_3 = (int)mDisplayDataList[i].GetCheckButton(2);
+                    int result_4 = (int)mDisplayDataList[i].GetCheckButton(3);
+                    int result_total = (int)mDisplayDataList[i].GetTotalResult();
+                    string ss_result_total = result_total.ToString();
+                    if(mDisplayDataList[i].IsVacancie())
+                    {
+                        ss_result_total = "欠";
+                    }
+                    sw.WriteLine(mCurrentTurn + "," + player + "," + result_1 + "," + result_2 + "," + result_3 + "," + result_4 + "," + ss_result_total);
             }
             sw.Close();
         }
+        private void SaveVacancieData_ToCSVResult(int tag)
+        {
+            System.IO.StreamWriter sw = new System.IO.StreamWriter(FILENAME_RESULT, true, System.Text.Encoding.GetEncoding("shift_jis"));
+            
+            int player = mDisplayDataList[tag].GetPlayerID();
+            int result_1 = (int)mDisplayDataList[tag].GetCheckButton(0);
+            int result_2 = (int)mDisplayDataList[tag].GetCheckButton(1);
+            int result_3 = (int)mDisplayDataList[tag].GetCheckButton(2);
+            int result_4 = (int)mDisplayDataList[tag].GetCheckButton(3);
+            string ss_result_total = ss_result_total = "欠詰";
+            sw.WriteLine(mCurrentTurn + "," + player + "," + result_1 + "," + result_2 + "," + result_3 + "," + result_4 + "," + ss_result_total);
+            sw.Close();
+        }
+        private void SaveData_ToCSVPlayerList()
+        {
+            System.IO.StreamWriter sw = new System.IO.StreamWriter(FILENAME_PLAYERLIST, false, System.Text.Encoding.GetEncoding("shift_jis"));
+            foreach (PlayerList list in mPlayerList)
+            {
+                sw.WriteLine(list.mID + "," + list.mName + "," + list.GetMemberVacancieType());
+            }
+            sw.Close();
+        }
+
         #endregion
 
         #region Load Datas
@@ -313,6 +340,11 @@ namespace HitListApp
                 {
                     string[] stArrayData = text.Split(',');
                     PlayerList list = new PlayerList( Int32.Parse(stArrayData[0]), stArrayData[1] );
+                    if(stArrayData.Length >= 3)
+                    {
+                        if (stArrayData[2] == PlayerList.GetVacancieType(1) ) list.mVacancieType = 1;
+                        else if (stArrayData[2] == PlayerList.GetVacancieType(2)) list.mVacancieType = 2;
+                    }
                     mPlayerList.Add(list);
                 }
             }
@@ -322,25 +354,27 @@ namespace HitListApp
             string text = "";
             using (StreamReader sr = new StreamReader(FILENAME_RESULT, Encoding.GetEncoding("Shift_JIS")))
             {
+                int display_count = 0;
                 while (( text = sr.ReadLine()) != null)
                 {
                     string[] stArrayData = text.Split(',');
                     if (Int32.Parse(stArrayData[0]) == mTurnNumber)
                     {
-                        int display_count = Int32.Parse(stArrayData[1]);
-                        int player_id = Int32.Parse(stArrayData[2]);
-                        string player_name = mPlayerList.Search(player_id);
-                        int[] result = {Int32.Parse(stArrayData[3]),
+                        int player_id = Int32.Parse(stArrayData[1]);
+                        string player_name = mPlayerList.SearchPlayerName(player_id);
+                        int[] result = {Int32.Parse(stArrayData[2]),
+                                       Int32.Parse(stArrayData[3]),
                                        Int32.Parse(stArrayData[4]),
-                                       Int32.Parse(stArrayData[5]),
-                                       Int32.Parse(stArrayData[6])
+                                       Int32.Parse(stArrayData[5])
                                        };
-                        LoadData(display_count, player_id, player_name, result);
+                        bool isVacancie = (stArrayData[6] == "欠");
+                        LoadData(display_count, player_id, player_name, result, isVacancie);
+                        display_count++;
                     }
                 }
             }
         }
-        private void LoadData(int display_count, int player_id, string player_name, int[] result)
+        private void LoadData(int display_count, int player_id, string player_name, int[] result, bool isVacancie)
         {
             Panel group = null;
             foreach (object obj_all in group_all.Controls)
@@ -354,12 +388,10 @@ namespace HitListApp
             }
 
             mDisplayDataList[display_count].SetPlayerID(player_id);
-            mDisplayDataList[display_count].SetTagID(display_count);
 
             SetLabel(TAG_ID, player_id.ToString(), group);
             SetLabel(TAG_NAME, player_name, group);
-
-            //int i = 0;
+            
             foreach (object obj in group.Controls)
             {
                 if (obj.GetType() == typeof(Button))
@@ -369,12 +401,13 @@ namespace HitListApp
                     int tag = Int32.Parse(tag_s);
                     mDisplayDataList[display_count].SetCheckButton(tag, result[tag]);
                     button.BackgroundImage = GetButtonBG(mDisplayDataList[display_count].GetCheckButton(tag));
-                    //i++;
-                    //if (i >= MAX_PLAY_NUM) break;
+                   
                 }
             }
 
-            SetLabel(TAG_RESULT, mDisplayDataList[display_count].GetTotalResult().ToString(), group);
+            string ss_result = mDisplayDataList[display_count].GetTotalResult().ToString();
+            if (isVacancie) ss_result = "欠";
+            SetLabel(TAG_RESULT, ss_result, group);
         }
 #endregion
 
@@ -390,13 +423,19 @@ namespace HitListApp
                     string s = (string)group.Tag;
                     int display_count = Int32.Parse(s);
 
-                    mDisplayDataList[display_count].SetPlayerID(player_num + display_count);
-                    SetLabel(TAG_ID, mPlayerList[player_num + display_count, 0].ToString(), group);
-                    SetLabel(TAG_NAME, mPlayerList[player_num + display_count, 1].ToString(), group);
+                    int player_id = player_num + display_count;
+                    while( player_id < mPlayerList.Count )
+                    {
+                        if (mPlayerList.SearchVacancieType(player_id) == "") break;
+                        player_id++;
+                    }
+                    mDisplayDataList[display_count].SetPlayerID(player_id);
+                    SetLabel(TAG_ID, mPlayerList[player_id - 1, 0].ToString(), group);
+                    SetLabel(TAG_NAME, mPlayerList[player_id - 1, 1].ToString(), group);
                 }
             }
         }
-        
+
         private void checkbutton_click(object sender, EventArgs e)
         {
             int display_count = 0;
@@ -457,11 +496,79 @@ namespace HitListApp
         private void Click_NextTurn(object sender, EventArgs e)
         {
             SaveData_FromCSVResult();
+            SaveData_ToCSVPlayerList();
             mCurrentTurn++;
             mCurrent1stPlayer += mDisplayPlayNum; 
             numericUpDown_TurnNum.Value++;
 
             SaveData_FromCSVOption();
+        }
+
+        private Control contextMenuSourceControl = null;
+
+        //ContextMenuStrip1のOpenedイベントハンドラ
+        private void contextMenuStrip1_Opened(object sender, EventArgs e)
+        {
+            ContextMenuStrip menu = (ContextMenuStrip)sender;
+            contextMenuSourceControl = menu.SourceControl;
+        }
+
+        private void ToolStripMenuItem_Click_Vacancies_KeepPos(object sender, EventArgs e)
+        {
+            Panel panel = (Panel)contextMenuSourceControl;
+            panel.Enabled = false;
+            string s = (string)panel.Tag;
+            int display_count = Int32.Parse(s);
+            mDisplayDataList[display_count].SetVacancie();
+            mPlayerList.SearchAndSetVacancieType(mDisplayDataList[display_count].GetPlayerID(), 1);
+        }
+
+        private void 欠員指定を解除ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Panel panel = (Panel)contextMenuSourceControl;
+            panel.Enabled = true;
+        }
+
+        private void 全ての欠員指定を解除ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (object obj_all in group_all.Controls)
+            {
+                if (obj_all.GetType() == typeof(Panel))
+                {
+                    Panel panel = (Panel)obj_all;
+                    panel.Enabled = true;
+                    string s = (string)panel.Tag;
+                    int display_count = Int32.Parse(s);
+                    mDisplayDataList[display_count].ResetVacancie();
+
+                    mPlayerList.SearchAndSetVacancieType(mDisplayDataList[display_count].GetPlayerID(), 0);
+                }
+            }
+        }
+
+        private void 削除して詰めるToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Panel panel = (Panel)contextMenuSourceControl;
+            string s = (string)panel.Tag;
+            int display_count = Int32.Parse(s);
+            SaveVacancieData_ToCSVResult(display_count);
+            mPlayerList.SearchAndSetVacancieType(mDisplayDataList[display_count].GetPlayerID(), 2);
+            SaveData_ToCSVPlayerList();
+
+            DisplayDataList[] displayDataList = mDisplayDataList;
+            for (int i = 0; i < mDisplayPlayNum; i++)
+            {
+                if (i < display_count) continue;
+                if( i+1 >= mDisplayPlayNum )
+                {
+                    mDisplayDataList[i].InitDatas();
+                    continue;
+                }
+                mDisplayDataList[i] = displayDataList[i+1];
+            }
+
+            ResetAllDisplay();
+            NextTurnDisplay();
         }
     }
 }

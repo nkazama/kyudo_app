@@ -17,19 +17,19 @@ namespace HitListApp
     class DisplayDataList
     {
         const int MAX_PLAY_NUM = 4;
-        public DisplayDataList(int tag)
+        public DisplayDataList()
         {
             mCheck = new int[MAX_PLAY_NUM];
-            InitDatas(tag);
+            InitDatas();
         }
 
-        public void InitDatas(int tag)
+        public void InitDatas()
         {
             for (int i = 0; i < MAX_PLAY_NUM; i++ )
                 mCheck[i] = (int)CheckType.CHECK_NONE;
 
             mTotalResult = 0;
-            mTagID = tag;
+            mIsVacancie = false;
         }
 
         public void ClickCheckButton(int s)
@@ -74,18 +74,22 @@ namespace HitListApp
             return mPlayerID;
         }
 
-        public void SetTagID(int tagID)
+        public void SetVacancie()
         {
-            mTagID = tagID;
+            mIsVacancie = true;
         }
-        public int GetTagID()
+        public void ResetVacancie()
         {
-            return mTagID;
+            mIsVacancie = false;
+        }
+        public bool IsVacancie()
+        {
+            return mIsVacancie;
         }
 
         protected int[] mCheck;
         protected int mTotalResult;
         protected int mPlayerID;
-        protected int mTagID;
+        protected bool mIsVacancie;
     }
 }

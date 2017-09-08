@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.checkbutton_1st_4 = new System.Windows.Forms.Button();
             this.checkbutton_1st_3 = new System.Windows.Forms.Button();
@@ -37,6 +38,10 @@
             this.name_1 = new System.Windows.Forms.Label();
             this.checkbutton_1st_1 = new System.Windows.Forms.Button();
             this.panel_list1 = new System.Windows.Forms.Panel();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.欠員にToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.位置固定ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.削除して詰めるToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.numericUpDown_TurnNum = new System.Windows.Forms.NumericUpDown();
             this.number_label = new System.Windows.Forms.Label();
             this.highlight_label = new System.Windows.Forms.Label();
@@ -85,7 +90,9 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.menuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.全ての欠員指定を解除ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel_list1.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_TurnNum)).BeginInit();
             this.group_all.SuspendLayout();
             this.panel_list6.SuspendLayout();
@@ -184,10 +191,10 @@
             // 
             // panel_list1
             // 
-            this.panel_list1.BackgroundImage = global::HitListApp.Properties.Resources.dot03;
             this.panel_list1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.panel_list1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel_list1.CausesValidation = false;
+            this.panel_list1.ContextMenuStrip = this.contextMenuStrip1;
             this.panel_list1.Controls.Add(this.checkbutton_1st_4);
             this.panel_list1.Controls.Add(this.number_1);
             this.panel_list1.Controls.Add(this.checkbutton_1st_3);
@@ -203,6 +210,38 @@
             this.panel_list1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel_list_MouseDown);
             this.panel_list1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel_list_MouseMove);
             this.panel_list1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panel_list_MouseUp);
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.欠員にToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(200, 67);
+            this.contextMenuStrip1.Opened += new System.EventHandler(this.contextMenuStrip1_Opened);
+            // 
+            // 欠員にToolStripMenuItem
+            // 
+            this.欠員にToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.位置固定ToolStripMenuItem,
+            this.削除して詰めるToolStripMenuItem});
+            this.欠員にToolStripMenuItem.Name = "欠員にToolStripMenuItem";
+            this.欠員にToolStripMenuItem.Size = new System.Drawing.Size(199, 30);
+            this.欠員にToolStripMenuItem.Text = "欠員に指定する";
+            // 
+            // 位置固定ToolStripMenuItem
+            // 
+            this.位置固定ToolStripMenuItem.Name = "位置固定ToolStripMenuItem";
+            this.位置固定ToolStripMenuItem.Size = new System.Drawing.Size(210, 30);
+            this.位置固定ToolStripMenuItem.Text = "位置固定";
+            this.位置固定ToolStripMenuItem.Click += new System.EventHandler(this.ToolStripMenuItem_Click_Vacancies_KeepPos);
+            // 
+            // 削除して詰めるToolStripMenuItem
+            // 
+            this.削除して詰めるToolStripMenuItem.Name = "削除して詰めるToolStripMenuItem";
+            this.削除して詰めるToolStripMenuItem.Size = new System.Drawing.Size(210, 30);
+            this.削除して詰めるToolStripMenuItem.Text = "削除して詰める";
+            this.削除して詰めるToolStripMenuItem.Click += new System.EventHandler(this.削除して詰めるToolStripMenuItem_Click);
             // 
             // numericUpDown_TurnNum
             // 
@@ -280,9 +319,9 @@
             // 
             // panel_list6
             // 
-            this.panel_list6.BackgroundImage = global::HitListApp.Properties.Resources.dot03;
             this.panel_list6.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.panel_list6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel_list6.ContextMenuStrip = this.contextMenuStrip1;
             this.panel_list6.Controls.Add(this.checkbutton_6th_4);
             this.panel_list6.Controls.Add(this.number_6);
             this.panel_list6.Controls.Add(this.checkbutton_6th_3);
@@ -387,9 +426,9 @@
             // 
             // panel_list5
             // 
-            this.panel_list5.BackgroundImage = global::HitListApp.Properties.Resources.dot03;
             this.panel_list5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.panel_list5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel_list5.ContextMenuStrip = this.contextMenuStrip1;
             this.panel_list5.Controls.Add(this.checkbutton_5th_4);
             this.panel_list5.Controls.Add(this.number_5);
             this.panel_list5.Controls.Add(this.checkbutton_5th_3);
@@ -494,9 +533,9 @@
             // 
             // panel_list4
             // 
-            this.panel_list4.BackgroundImage = global::HitListApp.Properties.Resources.dot03;
             this.panel_list4.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.panel_list4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel_list4.ContextMenuStrip = this.contextMenuStrip1;
             this.panel_list4.Controls.Add(this.checkbutton_4th_4);
             this.panel_list4.Controls.Add(this.number_4);
             this.panel_list4.Controls.Add(this.checkbutton_4th_3);
@@ -601,9 +640,9 @@
             // 
             // panel_list3
             // 
-            this.panel_list3.BackgroundImage = global::HitListApp.Properties.Resources.dot03;
             this.panel_list3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.panel_list3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel_list3.ContextMenuStrip = this.contextMenuStrip1;
             this.panel_list3.Controls.Add(this.checkbutton_3rd_4);
             this.panel_list3.Controls.Add(this.number_3);
             this.panel_list3.Controls.Add(this.result_3);
@@ -708,9 +747,9 @@
             // 
             // panel_list2
             // 
-            this.panel_list2.BackgroundImage = global::HitListApp.Properties.Resources.dot03;
             this.panel_list2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.panel_list2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel_list2.ContextMenuStrip = this.contextMenuStrip1;
             this.panel_list2.Controls.Add(this.checkbutton_2nd_4);
             this.panel_list2.Controls.Add(this.number_2);
             this.panel_list2.Controls.Add(this.result_2);
@@ -828,7 +867,8 @@
             // menuToolStripMenuItem
             // 
             this.menuToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.startToolStripMenuItem});
+            this.startToolStripMenuItem,
+            this.全ての欠員指定を解除ToolStripMenuItem});
             this.menuToolStripMenuItem.Name = "menuToolStripMenuItem";
             this.menuToolStripMenuItem.Size = new System.Drawing.Size(69, 29);
             this.menuToolStripMenuItem.Text = "Menu";
@@ -836,8 +876,15 @@
             // startToolStripMenuItem
             // 
             this.startToolStripMenuItem.Name = "startToolStripMenuItem";
-            this.startToolStripMenuItem.Size = new System.Drawing.Size(133, 30);
+            this.startToolStripMenuItem.Size = new System.Drawing.Size(264, 30);
             this.startToolStripMenuItem.Text = "Start";
+            // 
+            // 全ての欠員指定を解除ToolStripMenuItem
+            // 
+            this.全ての欠員指定を解除ToolStripMenuItem.Name = "全ての欠員指定を解除ToolStripMenuItem";
+            this.全ての欠員指定を解除ToolStripMenuItem.Size = new System.Drawing.Size(264, 30);
+            this.全ての欠員指定を解除ToolStripMenuItem.Text = "全ての欠員指定を解除";
+            this.全ての欠員指定を解除ToolStripMenuItem.Click += new System.EventHandler(this.全ての欠員指定を解除ToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -856,6 +903,7 @@
             this.Text = "Form1";
             this.panel_list1.ResumeLayout(false);
             this.panel_list1.PerformLayout();
+            this.contextMenuStrip1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_TurnNum)).EndInit();
             this.group_all.ResumeLayout(false);
             this.panel_list6.ResumeLayout(false);
@@ -932,6 +980,11 @@
         private System.Windows.Forms.Panel panel_list4;
         private System.Windows.Forms.Panel panel_list3;
         private System.Windows.Forms.Panel panel_list2;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem 欠員にToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 位置固定ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 削除して詰めるToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 全ての欠員指定を解除ToolStripMenuItem;
     }
 }
 

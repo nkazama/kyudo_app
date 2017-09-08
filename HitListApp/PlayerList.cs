@@ -14,13 +14,29 @@ namespace HitListApp
     {
         public int mID;
         public string mName;
+        public int mVacancieType;
 
         public PlayerList(int id, string sName)
         {
             mID = id;
             mName = sName;
+            mVacancieType = 0;
+        }
+        static public string GetVacancieType(int type)
+        {
+            switch (type)
+            {
+                case 1: return "欠";
+                case 2: return "欠詰";
+                default: return "";
+            }
+        }
+        public string GetMemberVacancieType()
+        {
+            return GetVacancieType(mVacancieType);
         }
     }
+
     class PlayerListAL : ArrayList
     {
         public virtual object this[int nIndex, int nType]
@@ -42,7 +58,7 @@ namespace HitListApp
                 return null;
             }
         }
-        public virtual string Search(int id)
+        public virtual string SearchPlayerName(int id)
         {
             foreach (object obj in this)
             {
@@ -60,6 +76,39 @@ namespace HitListApp
                 }
             }
             return "";
+        }
+        public virtual string SearchVacancieType(int id)
+        {
+            foreach (object obj in this)
+            {
+                if (obj.GetType() == typeof(PlayerList))
+                {
+                    PlayerList p = (PlayerList)obj;
+                    if (p.mID == id)
+                    {
+                        return p.GetMemberVacancieType();
+                    }
+                }
+                else
+                {
+                    return "";
+                }
+            }
+            return "";
+        }
+        public virtual void SearchAndSetVacancieType(int id, int value)
+        {
+            foreach (object obj in this)
+            {
+                if (obj.GetType() == typeof(PlayerList))
+                {
+                    PlayerList p = (PlayerList)obj;
+                    if (p.mID == id)
+                    {
+                        p.mVacancieType = value;
+                    }
+                }
+            }
         }
     }
 }
