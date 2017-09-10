@@ -29,7 +29,6 @@ namespace HitListApp
                 mCheck[i] = (int)CheckType.CHECK_NONE;
 
             mTotalResult = 0;
-            mIsVacancie = false;
         }
 
         public void ClickCheckButton(int s)
@@ -74,22 +73,8 @@ namespace HitListApp
             return mPlayerID;
         }
 
-        public void SetVacancie()
-        {
-            mIsVacancie = true;
-        }
-        public void ResetVacancie()
-        {
-            mIsVacancie = false;
-        }
-        public bool IsVacancie()
-        {
-            return mIsVacancie;
-        }
-
         protected int[] mCheck;
         protected int mTotalResult;
         protected int mPlayerID;
-        protected bool mIsVacancie;
     }
 }

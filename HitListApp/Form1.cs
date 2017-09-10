@@ -272,10 +272,6 @@ namespace HitListApp
                     int result_4 = (int)mDisplayDataList[i].GetCheckButton(3);
                     int result_total = (int)mDisplayDataList[i].GetTotalResult();
                     string ss_result_total = result_total.ToString();
-                    if(mDisplayDataList[i].IsVacancie())
-                    {
-                        ss_result_total = "欠";
-                    }
                     sw.WriteLine(mCurrentTurn + "," + player + "," + result_1 + "," + result_2 + "," + result_3 + "," + result_4 + "," + ss_result_total);
             }
             sw.Close();
@@ -367,15 +363,18 @@ namespace HitListApp
                                        Int32.Parse(stArrayData[4]),
                                        Int32.Parse(stArrayData[5])
                                        };
-                        bool isVacancie = (stArrayData[6] == "欠");
-                        LoadData(display_count, player_id, player_name, result, isVacancie);
-                        display_count++;
+                        if( LoadData(display_count, player_id, player_name, result, mPlayerList.SearchVacancieType(player_id)))
+                        {
+                            display_count++;
+                        }
                     }
                 }
             }
         }
-        private void LoadData(int display_count, int player_id, string player_name, int[] result, bool isVacancie)
+        private bool LoadData(int display_count, int player_id, string player_name, int[] result, string vacancieType)
         {
+            if (vacancieType == PlayerList.GetVacancieType(2)) return false;
+            
             Panel group = null;
             foreach (object obj_all in group_all.Controls)
             {
@@ -391,7 +390,7 @@ namespace HitListApp
 
             SetLabel(TAG_ID, player_id.ToString(), group);
             SetLabel(TAG_NAME, player_name, group);
-            
+
             foreach (object obj in group.Controls)
             {
                 if (obj.GetType() == typeof(Button))
@@ -404,10 +403,11 @@ namespace HitListApp
                    
                 }
             }
-
             string ss_result = mDisplayDataList[display_count].GetTotalResult().ToString();
-            if (isVacancie) ss_result = "欠";
+            if (vacancieType == PlayerList.GetVacancieType(1)) ss_result = PlayerList.GetVacancieType(1);
             SetLabel(TAG_RESULT, ss_result, group);
+
+            return true;
         }
 #endregion
 
@@ -432,6 +432,9 @@ namespace HitListApp
                     mDisplayDataList[display_count].SetPlayerID(player_id);
                     SetLabel(TAG_ID, mPlayerList[player_id - 1, 0].ToString(), group);
                     SetLabel(TAG_NAME, mPlayerList[player_id - 1, 1].ToString(), group);
+                    string ss_result = mDisplayDataList[display_count].GetTotalResult().ToString();
+                    if (mPlayerList.SearchVacancieType(player_id) == PlayerList.GetVacancieType(1)) ss_result = PlayerList.GetVacancieType(1);
+                    SetLabel(TAG_RESULT, ss_result, group);
                 }
             }
         }
@@ -519,7 +522,6 @@ namespace HitListApp
             panel.Enabled = false;
             string s = (string)panel.Tag;
             int display_count = Int32.Parse(s);
-            mDisplayDataList[display_count].SetVacancie();
             mPlayerList.SearchAndSetVacancieType(mDisplayDataList[display_count].GetPlayerID(), 1);
         }
 
@@ -539,8 +541,6 @@ namespace HitListApp
                     panel.Enabled = true;
                     string s = (string)panel.Tag;
                     int display_count = Int32.Parse(s);
-                    mDisplayDataList[display_count].ResetVacancie();
-
                     mPlayerList.SearchAndSetVacancieType(mDisplayDataList[display_count].GetPlayerID(), 0);
                 }
             }
