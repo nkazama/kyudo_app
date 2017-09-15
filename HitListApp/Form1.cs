@@ -29,6 +29,7 @@ namespace HitListApp
 
         int mTurnNumber;
         int mCurrentTurn;
+        int mIsLastTurn;
 
         int mDisplayPlayNum;
         int mCurrent1stPlayer;
@@ -184,6 +185,7 @@ namespace HitListApp
 
         private void InitalizeAll()
         {
+            mIsLastTurn = -1;
             LoadData_FromCSVOption();
             LoadData_FromCSVPlayerList();
 
@@ -276,27 +278,37 @@ namespace HitListApp
             }
             sw.Close();
         }
-        private void SaveVacancieData_ToCSVResult(int tag)
-        {
-            System.IO.StreamWriter sw = new System.IO.StreamWriter(FILENAME_RESULT, true, System.Text.Encoding.GetEncoding("shift_jis"));
-            
-            int player = mDisplayDataList[tag].GetPlayerID();
-            int result_1 = (int)mDisplayDataList[tag].GetCheckButton(0);
-            int result_2 = (int)mDisplayDataList[tag].GetCheckButton(1);
-            int result_3 = (int)mDisplayDataList[tag].GetCheckButton(2);
-            int result_4 = (int)mDisplayDataList[tag].GetCheckButton(3);
-            string ss_result_total = ss_result_total = "欠詰";
-            sw.WriteLine(mCurrentTurn + "," + player + "," + result_1 + "," + result_2 + "," + result_3 + "," + result_4 + "," + ss_result_total);
-            sw.Close();
-        }
         private void SaveData_ToCSVPlayerList()
         {
+            //現在の情報で更新が必要なものを保持しておく
+            Hashtable ht = new Hashtable();
+            foreach (PlayerList list in mPlayerList)
+            {
+                if (list.IsNeedUpdated())
+                {
+                    ht.Add(list.GetID().ToString(), list.GetMemberVacancieType());
+                }
+            }
+
+            //必ず現在の情報を取得後に更新する
+            LoadData_FromCSVPlayerList();
+
+            //書き込み
             System.IO.StreamWriter sw = new System.IO.StreamWriter(FILENAME_PLAYERLIST, false, System.Text.Encoding.GetEncoding("shift_jis"));
             foreach (PlayerList list in mPlayerList)
             {
-                sw.WriteLine(list.mID + "," + list.mName + "," + list.GetMemberVacancieType());
+                string vt = list.GetMemberVacancieType();
+                if(ht.ContainsKey(list.GetID().ToString()))
+                {
+                    vt = (string)ht[list.GetID().ToString()];
+                }
+                sw.WriteLine(list.GetID() + "," + list.GetName() + "," + list.GetGroup() + "," + vt + "," + list.GetMemo() );
             }
+            ht.Clear();
             sw.Close();
+
+            //最新情報に更新する
+            LoadData_FromCSVPlayerList();
         }
 
         #endregion
@@ -336,12 +348,14 @@ namespace HitListApp
                 while ((text = sr.ReadLine()) != null)
                 {
                     string[] stArrayData = text.Split(',');
-                    PlayerList list = new PlayerList( Int32.Parse(stArrayData[0]), stArrayData[1] );
-                    if(stArrayData.Length >= 3)
-                    {
-                        if (stArrayData[2] == PlayerList.GetVacancieType(1) ) list.mVacancieType = 1;
-                        else if (stArrayData[2] == PlayerList.GetVacancieType(2)) list.mVacancieType = 2;
-                    }
+                    PlayerList list = new PlayerList( 
+                        Int32.Parse(stArrayData[(int)PlayerList.CSV.ID]), 
+                        stArrayData[(int)PlayerList.CSV.NAME],
+                        stArrayData[(int)PlayerList.CSV.GROUP],
+                        stArrayData[(int)PlayerList.CSV.VACANCIE],
+                        stArrayData[(int)PlayerList.CSV.MEMO]
+                        );
+                    
                     mPlayerList.Add(list);
                 }
             }
@@ -417,6 +431,7 @@ namespace HitListApp
             Panel group = null;
             int player_num = mCurrent1stPlayer + (mTurnNumber - mCurrentTurn) * mDisplayPlayNum;
             player_num += mPlayerList.GetNumOfVancancies(player_num);
+            int max_player_id = 0;
             foreach (object obj_all in group_all.Controls)
             {
                 if (obj_all.GetType() == typeof(Panel))
@@ -426,11 +441,21 @@ namespace HitListApp
                     int display_count = Int32.Parse(s);
 
                     int player_id = player_num + display_count;
-                    while( player_id < mPlayerList.Count )
+                    player_id += mPlayerList.GetNumOfVancancies(player_id - 1, player_num );
+                    mIsLastTurn = mTurnNumber+1;
+                    while ( player_id < mPlayerList.Count )
                     {
-                        if (mPlayerList.SearchVacancieType(player_id) == "") break;
+                        string ss = mPlayerList.SearchVacancieType(player_id);
+                        if (ss != PlayerList.GetVacancieType(2))
+                        {
+                            mIsLastTurn = -1;
+                            break;
+                        }
                         player_id++;
                     }
+                    if (mIsLastTurn == mTurnNumber + 1) continue;
+                    if (max_player_id < player_id) max_player_id = player_id;
+
                     mDisplayDataList[display_count].SetPlayerID(player_id);
                     SetLabel(TAG_ID, mPlayerList[player_id - 1, 0].ToString(), group);
                     SetLabel(TAG_NAME, mPlayerList[player_id - 1, 1].ToString(), group);
@@ -439,6 +464,8 @@ namespace HitListApp
                     SetLabel(TAG_RESULT, ss_result, group);
                 }
             }
+            if (max_player_id + 1 >= mPlayerList.Count)
+                mIsLastTurn = mTurnNumber + 1;
         }
 
         private void checkbutton_click(object sender, EventArgs e)
@@ -494,6 +521,12 @@ namespace HitListApp
 
         private void Changed_TurmNum(object sender, EventArgs e)
         {
+            if (mIsLastTurn == (int)numericUpDown_TurnNum.Value)
+            {
+                numericUpDown_TurnNum.Value--;
+                return;
+            }
+
             mTurnNumber = (int)numericUpDown_TurnNum.Value;
             InitalizePlayer();
         }
@@ -502,12 +535,14 @@ namespace HitListApp
         {
             SaveData_FromCSVResult();
             SaveData_ToCSVPlayerList();
+
+            if (mIsLastTurn == mTurnNumber++) return;
+
             mCurrentTurn++;
             mCurrent1stPlayer += mDisplayPlayNum; 
             numericUpDown_TurnNum.Value++;
 
             SaveData_FromCSVOption();
-            LoadData_FromCSVPlayerList();
         }
 
         private Control contextMenuSourceControl = null;
@@ -528,13 +563,12 @@ namespace HitListApp
             mPlayerList.SearchAndSetVacancieType(mDisplayDataList[display_count].GetPlayerID(), 1);
         }
 
-        private void 欠員指定を解除ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void 全ての欠員指定を解除ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Panel panel = (Panel)contextMenuSourceControl;
-            panel.Enabled = true;
+            ResetAllVacancieType();
         }
 
-        private void 全ての欠員指定を解除ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ResetAllVacancieType()
         {
             foreach (object obj_all in group_all.Controls)
             {
@@ -554,7 +588,6 @@ namespace HitListApp
             Panel panel = (Panel)contextMenuSourceControl;
             string s = (string)panel.Tag;
             int display_count = Int32.Parse(s);
-            SaveVacancieData_ToCSVResult(display_count);
             mPlayerList.SearchAndSetVacancieType(mDisplayDataList[display_count].GetPlayerID(), 2);
             SaveData_ToCSVPlayerList();
 
@@ -562,16 +595,15 @@ namespace HitListApp
             for (int i = 0; i < mDisplayPlayNum; i++)
             {
                 if (i < display_count) continue;
-                if( i+1 >= mDisplayPlayNum )
+                if (i + 1 >= mDisplayPlayNum)
                 {
                     mDisplayDataList[i].InitDatas();
                     continue;
                 }
-                mDisplayDataList[i] = displayDataList[i+1];
+                mDisplayDataList[i] = displayDataList[i + 1];
             }
 
-            ResetAllDisplay();
-            NextTurnDisplay();
+            InitalizePlayer();
         }
     }
 }

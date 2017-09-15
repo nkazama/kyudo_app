@@ -12,15 +12,35 @@ namespace HitListApp
 {
     class PlayerList
     {
-        public int mID;
-        public string mName;
-        public int mVacancieType;
+        public enum CSV
+        {
+            ID,
+            NAME,
+            GROUP,
+            VACANCIE,
+            MEMO,
+        };
 
-        public PlayerList(int id, string sName)
+        protected int mID;
+        protected string mName;
+        protected string mGroup;
+        protected int mVacancieType;
+        protected string mMemo;
+
+        protected bool mIsUpdated;
+
+        public PlayerList(int id, string sName, string group, string vacancie, string memo)
         {
             mID = id;
             mName = sName;
+            mGroup = group;
             mVacancieType = 0;
+            mMemo = memo;
+
+            mIsUpdated = false;
+
+            if ( vacancie == GetVacancieType(1)) mVacancieType = 1;
+            else if (vacancie == GetVacancieType(2)) mVacancieType = 2;
         }
         static public string GetVacancieType(int type)
         {
@@ -34,6 +54,25 @@ namespace HitListApp
         public string GetMemberVacancieType()
         {
             return GetVacancieType(mVacancieType);
+        }
+
+        public int GetID() { return mID; }
+        public string GetName() { return mName; }
+        public string GetGroup() { return mGroup; }
+        public string GetMemo() { return mMemo; }
+        public int GetVacancie() { return mVacancieType; }
+
+        public void SetVacancie(int type)
+        {
+            if (type == mVacancieType) return;
+            mVacancieType = type;
+            mIsUpdated = true;
+        }
+
+        public bool IsNeedUpdated() { return mIsUpdated; }
+        public void ResetUpdated()
+        {
+            mIsUpdated = false;
         }
     }
 
@@ -50,9 +89,9 @@ namespace HitListApp
                     switch (nType)
                     {
                         case 0:
-                            return p.mID;
+                            return p.GetID();
                         case 1:
-                            return p.mName;
+                            return p.GetName();
                     }
                 }
                 return null;
@@ -65,9 +104,9 @@ namespace HitListApp
                 if (obj.GetType() == typeof(PlayerList))
                 {
                     PlayerList p = (PlayerList)obj;
-                    if (p.mID == id)
+                    if (p.GetID() == id)
                     {
-                        return p.mName;
+                        return p.GetName();
                     }
                 }
                 else
@@ -84,7 +123,7 @@ namespace HitListApp
                 if (obj.GetType() == typeof(PlayerList))
                 {
                     PlayerList p = (PlayerList)obj;
-                    if (p.mID == id)
+                    if (p.GetID() == id)
                     {
                         return p.GetMemberVacancieType();
                     }
@@ -103,14 +142,14 @@ namespace HitListApp
                 if (obj.GetType() == typeof(PlayerList))
                 {
                     PlayerList p = (PlayerList)obj;
-                    if (p.mID == id)
+                    if (p.GetID() == id)
                     {
-                        p.mVacancieType = value;
+                        p.SetVacancie(value);
                     }
                 }
             }
         }
-        public virtual int GetNumOfVancancies(int current_num = -1)
+        public virtual int GetNumOfVancancies(int current_num = -1, int start_num = 0)
         {
             int total = 0;
             int count = 0;
@@ -118,13 +157,16 @@ namespace HitListApp
             {
                 if (obj.GetType() == typeof(PlayerList))
                 {
-                    PlayerList p = (PlayerList)obj;
-                    if (p.mVacancieType != 0)
+                    if (count >= start_num)
                     {
-                        total++;
+                        PlayerList p = (PlayerList)obj;
+                        if (p.GetVacancie() == 2)
+                        {
+                            total++;
+                        }
                     }
                     count++;
-                    if (count > current_num && current_num != -1) break;
+                    if (count > current_num && current_num > 0) break;
                 }
             }
             return total;
