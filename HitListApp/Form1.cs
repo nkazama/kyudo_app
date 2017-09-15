@@ -330,6 +330,7 @@ namespace HitListApp
         private void LoadData_FromCSVPlayerList()
         {
             string text = "";
+            mPlayerList.Clear();
             using (StreamReader sr = new StreamReader(FILENAME_PLAYERLIST, Encoding.GetEncoding("Shift_JIS")))
             {
                 while ((text = sr.ReadLine()) != null)
@@ -415,6 +416,7 @@ namespace HitListApp
         {
             Panel group = null;
             int player_num = mCurrent1stPlayer + (mTurnNumber - mCurrentTurn) * mDisplayPlayNum;
+            player_num += mPlayerList.GetNumOfVancancies(player_num);
             foreach (object obj_all in group_all.Controls)
             {
                 if (obj_all.GetType() == typeof(Panel))
@@ -505,6 +507,7 @@ namespace HitListApp
             numericUpDown_TurnNum.Value++;
 
             SaveData_FromCSVOption();
+            LoadData_FromCSVPlayerList();
         }
 
         private Control contextMenuSourceControl = null;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace PlayerListForm
+namespace PlayerListApp
 {
     class PlayerPanel : System.Windows.Forms.Panel
     {
@@ -67,9 +67,17 @@ namespace PlayerListForm
         {
             return player_name.Text;
         }
+        public void SetPlayerName(string text)
+        {
+            player_name.Text = text;
+        }
         public string GetPlayerID()
         {
             return playerID.Text;
+        }
+        public void SetPlayerID(int id)
+        {
+            playerID.Text = id.ToString();
         }
 
         private System.Windows.Forms.TextBox playerID;

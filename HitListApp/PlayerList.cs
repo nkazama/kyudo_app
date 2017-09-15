@@ -110,5 +110,24 @@ namespace HitListApp
                 }
             }
         }
+        public virtual int GetNumOfVancancies(int current_num = -1)
+        {
+            int total = 0;
+            int count = 0;
+            foreach (object obj in this)
+            {
+                if (obj.GetType() == typeof(PlayerList))
+                {
+                    PlayerList p = (PlayerList)obj;
+                    if (p.mVacancieType != 0)
+                    {
+                        total++;
+                    }
+                    count++;
+                    if (count > current_num && current_num != -1) break;
+                }
+            }
+            return total;
+        }
     }
 }

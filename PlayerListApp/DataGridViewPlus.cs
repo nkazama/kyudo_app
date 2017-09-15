@@ -5,7 +5,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 
-namespace PlayerListForm
+namespace PlayerListApp
 {
     public class DataGridViewPlus : System.Windows.Forms.DataGridView
     {
@@ -249,6 +249,16 @@ namespace PlayerListForm
                         "".Equals(lines[r]) && nflag == false) break;
                     if ("".Equals(lines[r]) == false) nflag = false;
 
+
+                    // 行選択の時は最初の\tを削除
+                    if (lines[r] == "")
+                    {
+                        if (lines[r][0] == '\t')
+                        {
+                            lines[r] = lines[r].Remove(0, 1);
+                        }
+                    }
+                        
                     // タブで分割
                     String[] vals = lines[r].Split('\t');
 
@@ -269,6 +279,11 @@ namespace PlayerListForm
                             c = c - 1;
                             continue;
                         }
+                        //if (dgv[x + c2, y + r] == false)
+                        //{
+                        //    c = c - 1;
+                        //    continue;
+                        //}
                         //// 貼り付け処理(入力可能文字チェック無しの時)------------
                         //// 行追加モード&(最終行の時は行追加)
                         //if (y + r == dgv.RowCount - 1 &&
